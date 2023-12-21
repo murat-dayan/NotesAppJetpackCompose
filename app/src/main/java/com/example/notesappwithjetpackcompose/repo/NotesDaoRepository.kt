@@ -33,6 +33,12 @@ class NotesDaoRepository(var application: Application) {
 
     }
 
+    fun searchNotes(searchedText:String){
+        val job:Job = CoroutineScope(Dispatchers.Main).launch {
+            notesList.value = vt.notesDao().searchNotes(searchedText)
+        }
+    }
+
     fun addNote(note_title: String, note_detail: String, note_date:String){
         val job:Job = CoroutineScope(Dispatchers.Main).launch {
             val newNote = Note(0,note_title,note_detail, note_date)

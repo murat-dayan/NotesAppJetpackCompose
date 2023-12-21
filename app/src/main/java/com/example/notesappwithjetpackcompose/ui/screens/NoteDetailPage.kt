@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose
+package com.example.notesappwithjetpackcompose.ui.screens
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -13,19 +13,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,32 +34,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.notesappwithjetpackcompose.viewmodel.NoteAddPageViewModel
-import com.example.notesappwithjetpackcompose.viewmodelfactory.NoteAddPageViewModelFactory
-import kotlinx.coroutines.launch
+import com.example.notesappwithjetpackcompose.R
+import com.example.notesappwithjetpackcompose.entity.Note
+import com.example.notesappwithjetpackcompose.viewmodel.NoteDetailViewModel
+import com.example.notesappwithjetpackcompose.viewmodelfactory.NoteDetailPageViewModelFactory
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteAddPage(navController: NavController) {
+fun NoteDetailPage(note: Note, navController: NavController) {
     val context = LocalContext.current
-    val viewmodel : NoteAddPageViewModel = viewModel(
-        factory = NoteAddPageViewModelFactory(context.applicationContext as Application)
+    val viewmodel: NoteDetailViewModel = viewModel(
+        factory = NoteDetailPageViewModelFactory(context.applicationContext as Application)
     )
     val tfNoteTitle = remember { mutableStateOf("") }
     val tfNoteDetail = remember { mutableStateOf("") }
+    val isValuesChanged = remember { mutableStateOf(false) }
 
-    val snackbarHostState = remember { SnackbarHostState()}
-    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = true) {
+        tfNoteTitle.value = note.note_title
+        tfNoteDetail.value = note.note_detail
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Add Note",
+                        text = "Note Detail",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
@@ -72,11 +73,6 @@ fun NoteAddPage(navController: NavController) {
                     titleContentColor = colorResource(id = R.color.gold)
                 )
             )
-        },
-        snackbarHost = {
-                       SnackbarHost(
-                           hostState = snackbarHostState
-                       )
         },
         content = {
             Column(
@@ -91,21 +87,25 @@ fun NoteAddPage(navController: NavController) {
                     onValueChange ={
                         if (it.length <=15){
                             tfNoteTitle.value = it
+                            isValuesChanged.value = true
                         }
                     },
-                    label = { Text(text = "Add Note")},
+                    label = { Text(text = "Your Note title") },
                     singleLine = true,
-                    maxLines = 1,
                     modifier = Modifier.width(300.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.White,
                         focusedIndicatorColor = Color.Black
-                    )
+                    ),
+
                 )
                 TextField(
                     value = tfNoteDetail.value,
-                    onValueChange ={tfNoteDetail.value = it},
-                    label = { Text(text = "Add Detail")},
+                    onValueChange ={
+                        tfNoteDetail.value = it
+                        isValuesChanged.value = true
+                    },
+                    label = { Text(text = "Your Note Detail")},
                     modifier = Modifier.width(300.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.White,
@@ -114,25 +114,27 @@ fun NoteAddPage(navController: NavController) {
                 )
                 Button(
                     onClick = {
-                        if (tfNoteTitle.value.isNotEmpty()){
-                            viewmodel.saveNote(tfNoteTitle.value,tfNoteDetail.value, LocalDate.now().toString())
+                        if (isValuesChanged.value && tfNoteTitle.value.isNotEmpty()){
+                            viewmodel.updateNote(
+                                note.note_id,
+                                tfNoteTitle.value,
+                                tfNoteDetail.value,
+                                "${LocalDate.now()}(edited)"
+                            )
                             navController.navigate("main_page")
                         }else{
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Note title is empty !!!")
-                            }
+                            navController.navigate("main_page")
                         }
-
                     },
-                    modifier = Modifier.size(300.dp,40.dp),
+                    modifier = Modifier.size(300.dp, 40.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Black,
 
-                    )
+                        )
 
-                ){
+                ) {
                     Text(
-                        text = "Save",
+                        text = "Update",
                         fontSize = 19.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxSize(),
@@ -144,4 +146,3 @@ fun NoteAddPage(navController: NavController) {
         }
     )
 }
-

@@ -18,6 +18,10 @@ class MainPageViewModel(application: Application) : AndroidViewModel(application
         notesList = notesDaoRepo.bringNotesList()
     }
 
+    fun searchNotes(searchedText:String){
+        notesDaoRepo.searchNotes(searchedText)
+    }
+
     fun loadNotes(){
         notesDaoRepo.getAllNotes()
     }
