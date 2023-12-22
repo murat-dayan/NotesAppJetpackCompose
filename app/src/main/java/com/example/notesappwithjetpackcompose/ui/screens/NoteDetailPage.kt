@@ -1,7 +1,6 @@
 package com.example.notesappwithjetpackcompose.ui.screens
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,17 +25,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.notesappwithjetpackcompose.R
 import com.example.notesappwithjetpackcompose.entity.Note
+import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_primary
+import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_tertiaryContainer
 import com.example.notesappwithjetpackcompose.viewmodel.NoteDetailViewModel
-import com.example.notesappwithjetpackcompose.viewmodelfactory.NoteDetailPageViewModelFactory
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -46,9 +44,7 @@ import java.time.LocalDate
 @Composable
 fun NoteDetailPage(note: Note, navController: NavController) {
     val context = LocalContext.current
-    val viewmodel: NoteDetailViewModel = viewModel(
-        factory = NoteDetailPageViewModelFactory(context.applicationContext as Application)
-    )
+    val viewmodel: NoteDetailViewModel = hiltViewModel()
     val tfNoteTitle = remember { mutableStateOf("") }
     val tfNoteDetail = remember { mutableStateOf("") }
     val isValuesChanged = remember { mutableStateOf(false) }
@@ -69,8 +65,8 @@ fun NoteDetailPage(note: Note, navController: NavController) {
                     )
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.Black,
-                    titleContentColor = colorResource(id = R.color.gold)
+                    containerColor = md_theme_light_primary,
+                    titleContentColor = Color.White
                 )
             )
         },
@@ -78,7 +74,7 @@ fun NoteDetailPage(note: Note, navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colorResource(id = R.color.gold)),
+                    .background(md_theme_light_tertiaryContainer),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
@@ -127,10 +123,6 @@ fun NoteDetailPage(note: Note, navController: NavController) {
                         }
                     },
                     modifier = Modifier.size(300.dp, 40.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Black,
-
-                        )
 
                 ) {
                     Text(
@@ -138,7 +130,6 @@ fun NoteDetailPage(note: Note, navController: NavController) {
                         fontSize = 19.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxSize(),
-                        color = colorResource(id = R.color.gold)
                     )
                 }
 

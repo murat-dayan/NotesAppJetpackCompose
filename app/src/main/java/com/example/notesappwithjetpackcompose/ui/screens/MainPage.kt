@@ -1,7 +1,6 @@
 package com.example.notesappwithjetpackcompose.ui.screens
 
 import android.annotation.SuppressLint
-import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,23 +47,22 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.notesappwithjetpackcompose.R
+import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_primary
+import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_tertiaryContainer
 import com.example.notesappwithjetpackcompose.viewmodel.MainPageViewModel
-import com.example.notesappwithjetpackcompose.viewmodelfactory.MainPageViewModelFactory
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MainPage(navController: NavController) {
 
     val context = LocalContext.current
-    val viewmodel : MainPageViewModel = viewModel(
-        factory = MainPageViewModelFactory(context.applicationContext as Application)
-    )
+    val viewmodel : MainPageViewModel = hiltViewModel()
     val notesList = viewmodel.notesList.observeAsState(listOf())
     val isSearching = remember { mutableStateOf(false) }
     val tfSearch = remember { mutableStateOf("") }
@@ -80,6 +77,7 @@ fun MainPage(navController: NavController) {
         topBar = {
             TopAppBar(
                 title = {
+
                     if (isSearching.value){
                         TextField(
                             value = tfSearch.value ,
@@ -95,9 +93,7 @@ fun MainPage(navController: NavController) {
                                 )
                             },
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.Black,
-                                cursorColor = Color.White,
-                                focusedLabelColor = Color.White,
+                                containerColor = md_theme_light_primary,
                                 textColor = Color.White
                             ),
                             keyboardOptions = KeyboardOptions(
@@ -115,9 +111,10 @@ fun MainPage(navController: NavController) {
 
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.Black,
-                    titleContentColor = colorResource(id = R.color.gold)
+                    containerColor = md_theme_light_primary,
+                    titleContentColor = Color.White
                 ),
+
                 actions = {
                     if (isSearching.value){
                         IconButton(
@@ -160,8 +157,7 @@ fun MainPage(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colorResource(id = R.color.gold)),
-
+                    .background(md_theme_light_tertiaryContainer)
                 ) {
                 LazyColumn(
                     modifier = Modifier.consumeWindowInsets(innerPading),
@@ -176,8 +172,9 @@ fun MainPage(navController: NavController) {
                             Card (
                                 modifier = Modifier.padding(3.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = Color.Black
+                                    containerColor = md_theme_light_primary
                                 )
+
                             ){
                                 Row(
                                     modifier = Modifier
@@ -196,12 +193,10 @@ fun MainPage(navController: NavController) {
                                         Text(
                                             text = note.note_title,
                                             fontSize = 18.sp,
-                                            color = colorResource(id = R.color.gold),
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
                                             text = note.note_date!!,
-                                            color = Color.White,
                                             fontStyle = FontStyle.Italic,
                                             fontSize = 14.sp
                                         )
@@ -223,7 +218,6 @@ fun MainPage(navController: NavController) {
                                             Icon(
                                                 painter = painterResource(id = R.drawable.delete_icon),
                                                 contentDescription = null,
-                                                tint = Color.White
                                             )
                                         }
                                     }
@@ -244,10 +238,8 @@ fun MainPage(navController: NavController) {
                     Icon(
                         painter = painterResource(id = R.drawable.add_icon),
                         contentDescription = null,
-                        tint = colorResource(id = R.color.gold)
                     )
                 },
-                containerColor = Color.Black
             )
         }
     )

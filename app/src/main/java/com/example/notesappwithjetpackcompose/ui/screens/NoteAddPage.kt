@@ -34,11 +34,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.notesappwithjetpackcompose.R
+import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_primary
+import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_tertiaryContainer
 import com.example.notesappwithjetpackcompose.viewmodel.NoteAddPageViewModel
-import com.example.notesappwithjetpackcompose.viewmodelfactory.NoteAddPageViewModelFactory
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -47,10 +49,7 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteAddPage(navController: NavController) {
-    val context = LocalContext.current
-    val viewmodel : NoteAddPageViewModel = viewModel(
-        factory = NoteAddPageViewModelFactory(context.applicationContext as Application)
-    )
+    val viewmodel : NoteAddPageViewModel = hiltViewModel()
     val tfNoteTitle = remember { mutableStateOf("") }
     val tfNoteDetail = remember { mutableStateOf("") }
 
@@ -68,8 +67,8 @@ fun NoteAddPage(navController: NavController) {
                     )
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.Black,
-                    titleContentColor = colorResource(id = R.color.gold)
+                    containerColor = md_theme_light_primary,
+                    titleContentColor = Color.White
                 )
             )
         },
@@ -82,7 +81,7 @@ fun NoteAddPage(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colorResource(id = R.color.gold)),
+                    .background(md_theme_light_tertiaryContainer),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
@@ -125,10 +124,7 @@ fun NoteAddPage(navController: NavController) {
 
                     },
                     modifier = Modifier.size(300.dp,40.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Black,
 
-                    )
 
                 ){
                     Text(
@@ -136,7 +132,6 @@ fun NoteAddPage(navController: NavController) {
                         fontSize = 19.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxSize(),
-                        color = colorResource(id = R.color.gold)
                     )
                 }
 

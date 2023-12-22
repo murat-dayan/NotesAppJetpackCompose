@@ -6,10 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.notesappwithjetpackcompose.entity.Note
 import com.example.notesappwithjetpackcompose.repo.NotesDaoRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+@HiltViewModel
+class MainPageViewModel @Inject constructor(private val notesDaoRepo:NotesDaoRepository) : ViewModel() {
 
-class MainPageViewModel(application: Application) : AndroidViewModel(application) {
-
-    val notesDaoRepo = NotesDaoRepository(application)
 
     var notesList = MutableLiveData<List<Note>>()
 

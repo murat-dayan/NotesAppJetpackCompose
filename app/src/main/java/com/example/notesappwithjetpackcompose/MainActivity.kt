@@ -68,11 +68,11 @@ import com.example.notesappwithjetpackcompose.ui.screens.MainPage
 import com.example.notesappwithjetpackcompose.ui.screens.NoteAddPage
 import com.example.notesappwithjetpackcompose.ui.screens.NoteDetailPage
 import com.example.notesappwithjetpackcompose.ui.theme.NotesAppWithJetpackComposeTheme
-import com.example.notesappwithjetpackcompose.viewmodel.MainPageViewModel
-import com.example.notesappwithjetpackcompose.viewmodelfactory.MainPageViewModelFactory
 import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
