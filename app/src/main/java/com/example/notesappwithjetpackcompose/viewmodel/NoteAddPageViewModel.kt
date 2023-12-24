@@ -1,7 +1,5 @@
 package com.example.notesappwithjetpackcompose.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.example.notesappwithjetpackcompose.repo.NotesDaoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

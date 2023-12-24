@@ -1,17 +1,12 @@
 package com.example.notesappwithjetpackcompose.repo
 
-import android.app.Application
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import com.example.notesappwithjetpackcompose.entity.Note
 import com.example.notesappwithjetpackcompose.room.NotesDao
-import com.example.notesappwithjetpackcompose.room.RmDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.inject.Inject
 
 class NotesDaoRepository @Inject constructor(private val notesDao: NotesDao) {

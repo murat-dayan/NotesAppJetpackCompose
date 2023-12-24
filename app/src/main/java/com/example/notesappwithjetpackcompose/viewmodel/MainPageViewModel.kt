@@ -1,13 +1,12 @@
 package com.example.notesappwithjetpackcompose.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.notesappwithjetpackcompose.entity.Note
 import com.example.notesappwithjetpackcompose.repo.NotesDaoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+
 @HiltViewModel
 class MainPageViewModel @Inject constructor(private val notesDaoRepo:NotesDaoRepository) : ViewModel() {
 
