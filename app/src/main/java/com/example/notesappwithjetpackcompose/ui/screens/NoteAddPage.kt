@@ -3,12 +3,20 @@ package com.example.notesappwithjetpackcompose.ui.screens
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -17,6 +25,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -32,11 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.notesappwithjetpackcompose.R
+import com.example.notesappwithjetpackcompose.ui.components.NoteTopBar
 import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_primary
 import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_tertiaryContainer
 import com.example.notesappwithjetpackcompose.viewmodel.NoteAddPageViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -49,21 +61,32 @@ fun NoteAddPage(navController: NavController) {
 
     val snackbarHostState = remember { SnackbarHostState()}
     val scope = rememberCoroutineScope()
+    val isTitleEmpty = remember{ mutableStateOf(false) }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Add Note",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
+            NoteTopBar(
+                title = "Add Note",
+                isSearching = false,
+                isCanBack = true,
+                searchingHandler = {},
+                actionMainHandler = {},
+                actionSecondHandler = {
+                    scope.launch {
+                        if (tfNoteTitle.value.isNotEmpty()){
+                            viewmodel.saveNote(tfNoteTitle.value,tfNoteDetail.value,LocalDate.now().toString())
+                            navController.navigate("main_page")
+                        }else{
+                            isTitleEmpty.value = true
+                        }
+                    }
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = md_theme_light_primary,
-                    titleContentColor = Color.White
-                )
+                mainActionIcon = R.drawable.done_icon,
+                secondActionIcon = null,
+                leftIcon = R.drawable.back_icon,
+                leftActionHandler = {
+                    navController.navigate("main_page")
+                }
             )
         },
         snackbarHost = {
@@ -75,59 +98,46 @@ fun NoteAddPage(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(md_theme_light_tertiaryContainer),
+                    .background(md_theme_light_tertiaryContainer)
+                    .padding(top = it.calculateTopPadding(), start = 20.dp, end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly
+
             ) {
                 TextField(
                     value = tfNoteTitle.value,
                     onValueChange ={
+                        isTitleEmpty.value = false
                         if (it.length <=15){
                             tfNoteTitle.value = it
                         }
                     },
-                    label = { Text(text = "Add Note")},
+                    label = { Text(text = "Title")},
                     singleLine = true,
                     maxLines = 1,
-                    modifier = Modifier.width(300.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.White,
-                        focusedIndicatorColor = Color.Black
-                    )
+
+                    ),
+                    isError = isTitleEmpty.value
                 )
                 TextField(
                     value = tfNoteDetail.value,
                     onValueChange ={tfNoteDetail.value = it},
-                    label = { Text(text = "Add Detail")},
-                    modifier = Modifier.width(300.dp),
+                    label = { Text(text = "Detail")},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        ,
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.White,
-                        focusedIndicatorColor = Color.Black
-                    )
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
                 )
-                Button(
-                    onClick = {
-                        if (tfNoteTitle.value.isNotEmpty()){
-                            viewmodel.saveNote(tfNoteTitle.value,tfNoteDetail.value, LocalDate.now().toString())
-                            navController.navigate("main_page")
-                        }else{
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Note title is empty !!!")
-                            }
-                        }
-
-                    },
-                    modifier = Modifier.size(300.dp,40.dp),
-
-
-                ){
-                    Text(
-                        text = "Save",
-                        fontSize = 19.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
 
             }
         }

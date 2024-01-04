@@ -1,5 +1,7 @@
 package com.example.notesappwithjetpackcompose.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -36,17 +38,26 @@ import androidx.compose.ui.unit.sp
 import com.example.notesappwithjetpackcompose.R
 import com.example.notesappwithjetpackcompose.entity.Note
 import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_primary
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteCard(
     modifier: Modifier = Modifier,
     note: Note,
-    onDeleteNote:()->Unit
+    onDeleteNote: () -> Unit
 ) {
 
     val isExpanded = remember { mutableStateOf(false) }
     val isLongPressed = remember { mutableStateOf(false) }
+
+    val date = LocalDate.parse(note.note_date)
+    val dtf = DateTimeFormatter.ofPattern("MMM dd")
+    val formattedDate = dtf.format(date)
 
     Card(
         modifier = Modifier
@@ -90,12 +101,12 @@ fun NoteCard(
                         color = Color.White
                     )
                     Text(
-                        text = note.note_date!!,
+                        text = formattedDate,
                         fontStyle = FontStyle.Italic,
                         fontSize = 14.sp,
                         color = Color.White
                     )
-                    if (isLongPressed.value == true){
+                    if (isLongPressed.value == true) {
                         IconButton(
                             onClick = onDeleteNote,
                             modifier = Modifier.size(24.dp)
@@ -106,7 +117,8 @@ fun NoteCard(
                                 tint = Color.Red
                             )
                         }
-                    }else{
+                    } else {
+
                         if (isExpanded.value) {
                             IconButton(
                                 onClick = {
@@ -134,11 +146,12 @@ fun NoteCard(
                                 )
                             }
                         }
+
                     }
                 }
                 if (isExpanded.value == true) {
                     Text(
-                        text = note.note_detail,
+                        text = if (note.note_detail.isNotEmpty()) note.note_detail else "You haven't added any details yet",
                         color = Color.White,
                         modifier = Modifier.padding(top = 10.dp)
                     )
@@ -149,13 +162,13 @@ fun NoteCard(
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
 @Composable
 fun NoteCardPreview(
-    modifier: Modifier = Modifier
 ) {
     NoteCard(
-        note = Note(1, "sasad", "asdas", "sadasd"),
+        note = Note(1, "sasad", "asdas", "dsadsa"),
         onDeleteNote = {}
     )
 }
