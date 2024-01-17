@@ -49,7 +49,8 @@ import java.util.Date
 fun NoteCard(
     modifier: Modifier = Modifier,
     note: Note,
-    onDeleteNote: () -> Unit
+    onDeleteNote: () -> Unit,
+    onClickNote: ()->Unit
 ) {
 
     val isExpanded = remember { mutableStateOf(false) }
@@ -63,7 +64,12 @@ fun NoteCard(
         modifier = Modifier
             .padding(3.dp)
             .combinedClickable(
-                onClick = { isLongPressed.value = false },
+                onClick = {
+                    isLongPressed.value = false
+                    if (!isLongPressed.value){
+                        onClickNote()
+                    }
+                },
                 onLongClick = {
                     isLongPressed.value = true
                 },
@@ -151,7 +157,9 @@ fun NoteCard(
                 }
                 if (isExpanded.value == true) {
                     Text(
-                        text = if (note.note_detail.isNotEmpty()) note.note_detail else "You haven't added any details yet",
+                        text = if (note.note_detail.isNotEmpty()) note.note_detail else stringResource(
+                            id = R.string.emptyDetailNote
+                        ),
                         color = Color.White,
                         modifier = Modifier.padding(top = 10.dp)
                     )
@@ -169,6 +177,7 @@ fun NoteCardPreview(
 ) {
     NoteCard(
         note = Note(1, "sasad", "asdas", "dsadsa"),
-        onDeleteNote = {}
+        onDeleteNote = {},
+        onClickNote = {}
     )
 }

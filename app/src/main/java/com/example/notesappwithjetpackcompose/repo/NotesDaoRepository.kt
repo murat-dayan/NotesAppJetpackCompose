@@ -21,6 +21,8 @@ class NotesDaoRepository @Inject constructor(private val notesDao: NotesDao) {
         return notesList
     }
 
+
+
     fun getAllNotes(){
         val job:Job = CoroutineScope(Dispatchers.Main).launch {
             notesList.value = notesDao.allNotes()
@@ -55,4 +57,10 @@ class NotesDaoRepository @Inject constructor(private val notesDao: NotesDao) {
             getAllNotes()
         }
     }
+
+    suspend fun getNoteById(noteId: Int): Note?{
+        return notesDao.getNoteById(noteId)
+    }
+
+
 }

@@ -10,11 +10,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.notesappwithjetpackcompose.ui.screens.MainPage
 import com.example.notesappwithjetpackcompose.ui.screens.NoteAddPage
+import com.example.notesappwithjetpackcompose.ui.screens.SettingsPage
 import com.example.notesappwithjetpackcompose.ui.theme.NotesAppWithJetpackComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,8 +51,16 @@ fun NavHosting(){
         composable("main_page"){
             MainPage(navController = navCont)
         }
-        composable("note_add_page"){
-            NoteAddPage(navCont)
+        composable("note_add_page/{noteId}",
+            arguments = listOf(
+                navArgument("noteId"){type= NavType.IntType}
+            )
+        ){
+            val noteId= it.arguments?.getInt("noteId")!!
+            NoteAddPage(navController = navCont, noteId)
+        }
+        composable("settings_page"){
+            SettingsPage(navCont)
         }
 
     }

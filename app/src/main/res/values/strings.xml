@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">My Notes</string>
+    <string name="deleteWarning">note will be deleted?</string>
+    <string name="addNote">Add Note</string>
+    <string name="editNote">Edit Note</string>
+    <string name="noteTitle">Title</string>
+    <string name="noteDetail">Detail</string>
+    <string name="emptyDetailNote">You haven\'t added any details yet</string>
+    <string name="searchLabel">Search…</string>
+    <string name="settingsLabel">Settings</string>
+    <string name="yes">Yes</string>
+    <string name="soon">Soon</string>
 </resources>

@@ -13,6 +13,7 @@ class MainPageViewModel @Inject constructor(private val notesDaoRepo:NotesDaoRep
 
     var notesList = MutableLiveData<List<Note>>()
 
+
     init {
         loadNotes()
         notesList = notesDaoRepo.bringNotesList()

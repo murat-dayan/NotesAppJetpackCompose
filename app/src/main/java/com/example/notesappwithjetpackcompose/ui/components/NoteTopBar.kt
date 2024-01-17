@@ -3,12 +3,17 @@ package com.example.notesappwithjetpackcompose.ui.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -46,10 +52,14 @@ fun NoteTopBar(
     @DrawableRes leftIcon: Int?=null,
     actionMainHandler: () -> Unit,
     actionSecondHandler: () -> Unit,
-    leftActionHandler: ()->Unit
+    leftActionHandler: ()->Unit,
+    menuAvailable: Boolean,
+    menuItemHandler: ()->Unit
     ) {
 
     val tfSearch = remember { mutableStateOf("") }
+    val isMenuOpen = remember { mutableStateOf(false) }
+
     TopAppBar(
         title = {
 
@@ -62,7 +72,7 @@ fun NoteTopBar(
                     },
                     placeholder = {
                         Text(
-                            text = "Search...",
+                            text = stringResource(id = R.string.searchLabel),
                             color = Color.White,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(top = 5.dp)
@@ -117,31 +127,59 @@ fun NoteTopBar(
         ),
 
         actions = {
-            if (isSearching) {
-                IconButton(
-                    onClick = {
-                        tfSearch.value = ""
-                        actionMainHandler()
+            Row {
+
+                if (isSearching) {
+                    IconButton(
+                        onClick = {
+                            tfSearch.value = ""
+                            actionMainHandler()
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = secondActionIcon!!),
+                            contentDescription = "search",
+                            tint = Color.White
+                        )
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(id = secondActionIcon!!),
-                        contentDescription = "search",
-                        tint = Color.White
-                    )
+                } else {
+                    IconButton(
+                        onClick = {
+                            tfSearch.value = ""
+                            actionSecondHandler()
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = mainActionIcon),
+                            contentDescription = "close",
+                            tint = Color.White
+                        )
+                    }
                 }
-            } else {
-                IconButton(
-                    onClick = {
-                        tfSearch.value = ""
-                        actionSecondHandler()
+                if (menuAvailable){
+                    Box(modifier = Modifier ){
+                        IconButton(
+                            onClick = {
+                                isMenuOpen.value = true
+                            }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = isMenuOpen.value,
+                            onDismissRequest = {
+                                isMenuOpen.value = false
+                            }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(text = stringResource(id = R.string.soon)) },
+                                onClick = { menuItemHandler() }
+                            )
+                        }
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(id = mainActionIcon),
-                        contentDescription = "close",
-                        tint = Color.White
-                    )
                 }
             }
         }
@@ -162,7 +200,9 @@ fun NoteTopBarPreview() {
             mainActionIcon = R.drawable.search_icon,
             secondActionIcon = R.drawable.close__icon,
             leftActionHandler = {},
-            leftIcon = R.drawable.back_icon
+            leftIcon = R.drawable.back_icon,
+            menuAvailable = true,
+            menuItemHandler = {}
         )
     }
 }

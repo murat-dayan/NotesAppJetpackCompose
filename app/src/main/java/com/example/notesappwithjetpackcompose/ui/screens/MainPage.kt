@@ -1,6 +1,8 @@
 package com.example.notesappwithjetpackcompose.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,7 +42,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +60,7 @@ import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_tertiaryCo
 import com.example.notesappwithjetpackcompose.viewmodel.MainPageViewModel
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -63,18 +69,20 @@ fun MainPage(navController: NavController) {
     val viewmodel : MainPageViewModel = hiltViewModel()
     val notesList = viewmodel.notesList.observeAsState(listOf())
     val isSearching = remember { mutableStateOf(false) }
-    val tfSearch = remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
 
     LaunchedEffect(key1 = true){
         viewmodel.loadNotes()
+        println("dasdas")
     }
 
     Scaffold (
         topBar = {
             NoteTopBar(
-                title = "My Notes",
+                title = stringResource(id = R.string.app_name),
                 isSearching = isSearching.value,
                 isCanBack = false,
                 searchingHandler = {
@@ -90,9 +98,16 @@ fun MainPage(navController: NavController) {
                 mainActionIcon = R.drawable.search_icon,
                 secondActionIcon = R.drawable.close__icon,
                 leftIcon = null,
-                leftActionHandler = {}
+                leftActionHandler = {},
+                menuAvailable = true,
+                menuItemHandler = {
+                    //navController.navigate("settings_page")
+                },
+
             )
         },
+
+
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState
@@ -101,16 +116,14 @@ fun MainPage(navController: NavController) {
         content = {innerPading->
 
 
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(md_theme_light_tertiaryContainer)
+                    .padding(top = innerPading.calculateTopPadding())
                 ) {
-                LazyColumn(
-                    modifier = Modifier.consumeWindowInsets(innerPading),
-                    contentPadding = innerPading,
-
-                    ){
+                LazyColumn(){
                     items(
                         count = notesList.value.count(),
                         itemContent = {
@@ -121,13 +134,18 @@ fun MainPage(navController: NavController) {
                                 onDeleteNote = {
                                     scope.launch {
                                         val sb = snackbarHostState.showSnackbar(
-                                            message = "${note.note_title} note will be deleted?",
-                                            actionLabel = "YES"
+                                            message = "${note.note_title} ${context.getString(R.string.deleteWarning)}",
+                                            actionLabel = context.getString(R.string.yes),
+                                            withDismissAction = true
+
                                         )
                                         if (sb == SnackbarResult.ActionPerformed){
                                             viewmodel.deleteNote(note.note_id)
                                         }
                                     }
+                                },
+                                onClickNote = {
+                                    navController.navigate("note_add_page/${note.note_id}")
                                 }
                                 )
                         }
@@ -139,7 +157,7 @@ fun MainPage(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("note_add_page")
+                    navController.navigate("note_add_page/${-1}")
                 },
                 content = {
                     Icon(
@@ -150,6 +168,9 @@ fun MainPage(navController: NavController) {
                 modifier = Modifier
                     .clip(CircleShape)
             )
+        },
+        bottomBar = {
+
         }
     )
 }

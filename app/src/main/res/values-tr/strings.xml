@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">My Notes</string>
+    <string name="deleteWarning">notu silinsin mi?</string>
+    <string name="addNote">Not Ekle</string>
+    <string name="editNote">Notu Düzenle</string>
+    <string name="noteTitle">Başlık</string>
+    <string name="noteDetail">Detay</string>
+    <string name="emptyDetailNote">henüz bir detay eklemediniz</string>
+    <string name="searchLabel">Ara…</string>
+    <string name="settingsLabel">Ayarlar</string>
+    <string name="yes">Evet</string>
+    <string name="soon">Yakında</string>
+</resources>
