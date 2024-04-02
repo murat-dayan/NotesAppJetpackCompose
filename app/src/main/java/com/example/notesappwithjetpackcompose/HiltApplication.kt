@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.di
+package com.example.notesappwithjetpackcompose
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -76,7 +76,6 @@ fun MainPage(navController: NavController) {
 
     LaunchedEffect(key1 = true){
         viewmodel.loadNotes()
-        println("dasdas")
     }
 
     Scaffold (
