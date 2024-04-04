@@ -1,33 +1,80 @@
 package com.example.notesappwithjetpackcompose.presentation.scenes.add_note
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notesappwithjetpackcompose.core.common.Resource
 import com.example.notesappwithjetpackcompose.domain.model.Note
-import com.example.notesappwithjetpackcompose.repo.NotesDaoRepository
+import com.example.notesappwithjetpackcompose.domain.use_case.AddNoteUseCase
+import com.example.notesappwithjetpackcompose.domain.use_case.DeleteNoteUseCase
+import com.example.notesappwithjetpackcompose.domain.use_case.UpdateNoteUseCase
+import com.example.notesappwithjetpackcompose.presentation.state.CRUDState
+import com.example.notesappwithjetpackcompose.presentation.state.NoteState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class NoteAddPageViewModel @Inject constructor(var notesDaoRepo:NotesDaoRepository) : ViewModel(){
+class NoteAddPageViewModel @Inject constructor(
+    private val addNoteUseCase: AddNoteUseCase,
+    private val updateNoteUseCase: UpdateNoteUseCase,
+) : ViewModel(){
 
-    private val _note = MutableLiveData<Note?>(null)
-    val note : LiveData<Note?> = _note
+    private val _noteState = MutableStateFlow(NoteState())
+    val noteState : StateFlow<NoteState>
+        get() = _noteState
 
-    fun saveNote(note_title:String,note_detail:String, note_date:String){
-        notesDaoRepo.addNote(note_title,note_detail, note_date)
+    private val _crudState = MutableStateFlow(CRUDState())
+    val crudState: StateFlow<CRUDState>
+        get() = _crudState
+
+    fun addNote(note:Note){
+        addNoteUseCase(note).onEach {result->
+            when(result){
+                is Resource.Error -> {
+                    _crudState.value = CRUDState().copy(
+                        errorMsg = result.msg
+                    )
+                }
+                is Resource.Loading -> {
+                    _crudState.value = CRUDState().copy(
+                        isLoading = true
+                    )
+                }
+                is Resource.Success -> {
+                    _crudState.value = CRUDState().copy(
+                        resultText = result.data
+                    )
+                }
+            }
+
+        }.launchIn(viewModelScope)
     }
 
-    fun updateNote(note_id:Int,note_title:String,note_detail:String, note_date:String){
-        notesDaoRepo.updateNote(note_id,note_title,note_detail,note_date)
+    fun updateNote(note:Note){
+        updateNoteUseCase(note).onEach {result->
+            when(result){
+                is Resource.Error -> {
+                    _crudState.value = CRUDState().copy(
+                        errorMsg = result.msg
+                    )
+                }
+                is Resource.Loading -> {
+                    _crudState.value = CRUDState().copy(
+                        isLoading = true
+                    )
+                }
+                is Resource.Success -> {
+                    _crudState.value = CRUDState().copy(
+                        resultText = result.data
+                    )
+                }
+            }
+
+        }.launchIn(viewModelScope)
     }
 
-    fun getNoteById(noteId: Int){
-        viewModelScope.launch {
-            _note.value = notesDaoRepo.getNoteById(noteId)
-        }
-    }
 
 }
