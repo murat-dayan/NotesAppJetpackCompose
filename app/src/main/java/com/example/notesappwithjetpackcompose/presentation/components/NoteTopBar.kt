@@ -79,6 +79,7 @@ fun NoteTopBar(
                         )
                     },
                     colors = TextFieldDefaults.textFieldColors(
+                        focusedTextColor = Color.White,
                         containerColor = md_theme_light_primary,
                         focusedLabelColor = Color.Red,
                         unfocusedLabelColor = Color.Blue

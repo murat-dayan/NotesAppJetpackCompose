@@ -154,8 +154,6 @@ fun MainPage(
                     .clip(CircleShape)
             )
         },
-        bottomBar = {
 
-        }
     )
 }

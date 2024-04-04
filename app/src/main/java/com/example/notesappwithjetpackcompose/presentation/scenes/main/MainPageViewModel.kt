@@ -64,6 +64,7 @@ class MainPageViewModel @Inject constructor(
     fun deleteNote(note: Note){
         CoroutineScope(Dispatchers.IO).launch {
             deleteNoteUseCase(note)
+            getAllNotes()
         }
     }
 
