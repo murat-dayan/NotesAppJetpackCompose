@@ -58,35 +58,17 @@ class RepositoryImpl @Inject constructor(
             emit(Resource.Error(it.message.toString()))
         }
 
-    override fun addNote(note: Note): Flow<Resource<String>> = flow{
+    override suspend fun addNote(note: Note) {
+        notesDao.addNote(note)
+    }
 
-        emit(Resource.Loading())
-        val result = notesDao.addNote(note)
-        emit(Resource.Success(result))
-    }.flowOn(Dispatchers.IO)
-        .catch {
-            emit(Resource.Error(it.message.toString()))
-        }
+    override suspend fun updateNote(note: Note) {
+        notesDao.updateNote(note)
+    }
 
-    override fun updateNote(note: Note): Flow<Resource<String>> = flow{
-
-        emit(Resource.Loading())
-        val result = notesDao.updateNote(note)
-        emit(Resource.Success(result))
-    }.flowOn(Dispatchers.IO)
-        .catch {
-            emit(Resource.Error(it.message.toString()))
-        }
-
-    override fun deleteNote(note: Note): Flow<Resource<String>> = flow{
-
-        emit(Resource.Loading())
-        val result = notesDao.deleteNote(note)
-        emit(Resource.Success(result))
-    }.flowOn(Dispatchers.IO)
-        .catch {
-            emit(Resource.Error(it.message.toString()))
-        }
+    override suspend fun deleteNote(note: Note) {
+        notesDao.deleteNote(note)
+    }
 
 
 }

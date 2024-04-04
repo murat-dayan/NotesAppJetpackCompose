@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -18,8 +19,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,11 +27,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.notesappwithjetpackcompose.R
+import com.example.notesappwithjetpackcompose.domain.model.Note
 import com.example.notesappwithjetpackcompose.presentation.components.NoteCard
 import com.example.notesappwithjetpackcompose.presentation.components.NoteTopBar
+import com.example.notesappwithjetpackcompose.presentation.navigation.Screen
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_tertiaryContainer
 import kotlinx.coroutines.launch
 
@@ -40,19 +41,18 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun MainPage(navController: NavController) {
+fun MainPage(
+    navController: NavController,
+    mainPageViewModel: MainPageViewModel
 
-    val viewmodel : MainPageViewModel = hiltViewModel()
-    val notesList = viewmodel.notesList.observeAsState(listOf())
+) {
+
     val isSearching = remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-
-    LaunchedEffect(key1 = true){
-        viewmodel.loadNotes()
-    }
+    val notesListState = mainPageViewModel.noteListState.collectAsStateWithLifecycle().value
 
     Scaffold (
         topBar = {
@@ -61,11 +61,10 @@ fun MainPage(navController: NavController) {
                 isSearching = isSearching.value,
                 isCanBack = false,
                 searchingHandler = {
-                    viewmodel.searchNotes(it)
+                    mainPageViewModel.searchNote(it)
                 },
                 actionMainHandler = {
                     isSearching.value = false
-                    viewmodel.loadNotes()
                 },
                 actionSecondHandler = {
                     isSearching.value = true
@@ -76,7 +75,7 @@ fun MainPage(navController: NavController) {
                 leftActionHandler = {},
                 menuAvailable = true,
                 menuItemHandler = {
-                    //navController.navigate("settings_page")
+                    navController.navigate(Screen.SettingsScreen.route)
                 },
 
             )
@@ -98,33 +97,44 @@ fun MainPage(navController: NavController) {
                     .background(md_theme_light_tertiaryContainer)
                     .padding(top = innerPading.calculateTopPadding())
                 ) {
-                LazyColumn(){
-                    items(
-                        count = notesList.value.count(),
-                        itemContent = {
-                            val note = notesList.value[it]
+                if (notesListState.notes?.isNotEmpty() == true){
+                    LazyColumn(){
+                        items(
+                            count = notesListState.notes.count(),
+                            itemContent = {
+                                val note = notesListState.notes[it]
 
-                            NoteCard(
-                                note = note,
-                                onDeleteNote = {
-                                    scope.launch {
-                                        val sb = snackbarHostState.showSnackbar(
-                                            message = "${note.note_title} ${context.getString(R.string.deleteWarning)}",
-                                            actionLabel = context.getString(R.string.yes),
-                                            withDismissAction = true
+                                NoteCard(
+                                    note = note,
+                                    onDeleteNote = {
+                                        scope.launch {
+                                            val sb = snackbarHostState.showSnackbar(
+                                                message = "${note.note_title} ${context.getString(R.string.deleteWarning)}",
+                                                actionLabel = context.getString(R.string.yes),
+                                                withDismissAction = true
 
-                                        )
-                                        if (sb == SnackbarResult.ActionPerformed){
-                                            viewmodel.deleteNote(note.note_id)
+                                            )
+                                            if (sb == SnackbarResult.ActionPerformed){
+                                                val deletedNote = Note(note.note_id,"","","")
+                                                mainPageViewModel.deleteNote(deletedNote)
+                                            }
                                         }
+                                    },
+                                    onClickNote = {
+                                        navController.navigate("${Screen.AddNoteScreen.route}/${note.note_id}")
                                     }
-                                },
-                                onClickNote = {
-                                    navController.navigate("note_add_page/${note.note_id}")
-                                }
                                 )
-                        }
-                    )
+                            }
+                        )
+                    }
+                }
+                if (notesListState.isLoading) {
+                    CircularProgressIndicator()
+                }
+
+                if (!(notesListState.errorMsg.isNullOrEmpty())) {
+                    println(notesListState.errorMsg)
+
                 }
             }
 
@@ -132,7 +142,7 @@ fun MainPage(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("note_add_page/${-1}")
+                    navController.navigate("${Screen.AddNoteScreen.route}/${-1}")
                 },
                 content = {
                     Icon(

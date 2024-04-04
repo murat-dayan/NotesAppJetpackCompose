@@ -12,9 +12,9 @@ interface NInterface {
 
     fun getNoteById(noteId:Int): Flow<Resource<Note>>
 
-    fun addNote(note: Note) : Flow<Resource<String>>
+    suspend fun addNote(note: Note)
 
-    fun updateNote(note: Note) : Flow<Resource<String>>
+    suspend fun updateNote(note: Note)
 
-    fun deleteNote(note: Note) : Flow<Resource<String>>
+    suspend fun deleteNote(note: Note)
 }

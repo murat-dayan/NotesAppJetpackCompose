@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.notesappwithjetpackcompose.R
 import com.example.notesappwithjetpackcompose.presentation.components.NoteTopBar
+import com.example.notesappwithjetpackcompose.presentation.navigation.Screen
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.NotesAppWithJetpackComposeTheme
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_tertiaryContainer
 
@@ -49,7 +50,7 @@ fun SettingsPage(navController: NavController){
                      mainActionIcon = R.drawable.settings_icon,
                      actionMainHandler = { /*TODO*/ },
                      actionSecondHandler = { /*TODO*/ },
-                     leftActionHandler = { navController.navigate("main_page") },
+                     leftActionHandler = { navController.navigate(Screen.MainScreen.route) },
                      menuAvailable = false,
                      leftIcon = R.drawable.back_icon
                  ) {

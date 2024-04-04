@@ -8,5 +8,5 @@ class UpdateNoteUseCase @Inject constructor(
     private val nInterface: NInterface
 ) {
 
-    operator fun invoke(note: Note) = nInterface.updateNote(note)
+    suspend operator fun invoke(note: Note) = nInterface.updateNote(note)
 }

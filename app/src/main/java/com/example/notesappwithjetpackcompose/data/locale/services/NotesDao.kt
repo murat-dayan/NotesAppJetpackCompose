@@ -3,6 +3,7 @@ package com.example.notesappwithjetpackcompose.data.locale.services
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.notesappwithjetpackcompose.data.locale.dto.NoteDto
@@ -20,13 +21,12 @@ interface NotesDao {
     @Query("SELECT * FROM notes WHERE note_id = :noteId")
     suspend fun getNoteById(noteId:Int): NoteDto?
 
-    @Insert
-    suspend fun addNote(note: Note) : String
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addNote(note: Note)
 
     @Update
-    suspend fun updateNote(note: Note) : String
-
+    suspend fun updateNote(note: Note)
     @Delete
-    suspend fun deleteNote(note: Note) : String
+    suspend fun deleteNote(note: Note)
 
 }

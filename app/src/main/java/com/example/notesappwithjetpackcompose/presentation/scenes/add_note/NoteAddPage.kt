@@ -29,9 +29,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.notesappwithjetpackcompose.R
+import com.example.notesappwithjetpackcompose.domain.model.Note
 import com.example.notesappwithjetpackcompose.presentation.components.NoteTopBar
+import com.example.notesappwithjetpackcompose.presentation.navigation.Screen
+import com.example.notesappwithjetpackcompose.presentation.state.CRUDState
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_tertiaryContainer
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -40,8 +44,11 @@ import java.time.LocalDate
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteAddPage(navController: NavController, noteId: Int) {
-    val viewmodel: NoteAddPageViewModel = hiltViewModel()
+fun NoteAddPage(
+    navController: NavController,
+    noteId: Int,
+    noteAddPageViewModel: NoteAddPageViewModel
+) {
     val tfNoteTitle = remember { mutableStateOf("") }
     val tfNoteDetail = remember { mutableStateOf("") }
 
@@ -49,28 +56,27 @@ fun NoteAddPage(navController: NavController, noteId: Int) {
     val scope = rememberCoroutineScope()
     val isTitleEmpty = remember { mutableStateOf(false) }
 
-    val note = viewmodel.note.observeAsState()
-    LaunchedEffect(key1 = true){
+    val noteState = noteAddPageViewModel.noteState.collectAsStateWithLifecycle().value
+
+    LaunchedEffect(noteId) {
         if (noteId != -1){
-            viewmodel.getNoteById(noteId)
+            noteAddPageViewModel.getNoteById(noteId)
 
-
-
-            if (note.value != null){
-                println(note.value!!.note_title)
-                tfNoteTitle.value = note.value!!.note_title
-                tfNoteDetail.value = note.value!!.note_detail
-            }else{
-                println("note boş")
-            }
         }
+    }
+
+    if (noteState.note != null){
+        tfNoteTitle.value = noteState.note.note_title
+        tfNoteDetail.value = noteState.note.note_detail
     }
 
 
     Scaffold(
         topBar = {
             NoteTopBar(
-                title = if (noteId == -1) stringResource(id = R.string.addNote) else stringResource(id = R.string.editNote),
+                title = if (noteId == -1) stringResource(id = R.string.addNote) else stringResource(
+                    id = R.string.editNote
+                ),
                 isSearching = false,
                 isCanBack = true,
                 searchingHandler = {},
@@ -79,16 +85,24 @@ fun NoteAddPage(navController: NavController, noteId: Int) {
                     scope.launch {
                         if (tfNoteTitle.value.isNotEmpty()) {
 
-                            if (noteId == -1){
-                                viewmodel.saveNote(
+                            if (noteId == -1) {
+                                val newNote = Note(
+                                    note_id = null,
                                     tfNoteTitle.value,
                                     tfNoteDetail.value,
                                     LocalDate.now().toString()
                                 )
-                            }else{
-                                viewmodel.updateNote(noteId,tfNoteTitle.value,tfNoteDetail.value,LocalDate.now().toString())
+                                noteAddPageViewModel.addNote(newNote)
+                            } else {
+                                val updatedNote = Note(
+                                    noteId,
+                                    tfNoteTitle.value,
+                                    tfNoteDetail.value,
+                                    LocalDate.now().toString()
+                                )
+                                noteAddPageViewModel.updateNote(updatedNote)
                             }
-                            navController.navigate("main_page")
+                            navController.navigate(Screen.MainScreen.route)
                         } else {
                             isTitleEmpty.value = true
                         }
@@ -98,7 +112,8 @@ fun NoteAddPage(navController: NavController, noteId: Int) {
                 secondActionIcon = null,
                 leftIcon = R.drawable.back_icon,
                 leftActionHandler = {
-                    navController.navigate("main_page")
+                    navController.navigate(Screen.MainScreen.route
+                    )
                 },
                 menuAvailable = false,
                 menuItemHandler = {}

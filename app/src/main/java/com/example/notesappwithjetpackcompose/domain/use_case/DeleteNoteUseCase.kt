@@ -8,5 +8,5 @@ class DeleteNoteUseCase @Inject constructor(
     private val nInterface: NInterface
 ) {
 
-    operator fun invoke(note: Note) = nInterface.deleteNote(note)
+    suspend operator fun invoke(note: Note) = nInterface.deleteNote(note)
 }
