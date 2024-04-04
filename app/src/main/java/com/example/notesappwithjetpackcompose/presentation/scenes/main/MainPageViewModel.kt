@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.presentation.viewmodel
+package com.example.notesappwithjetpackcompose.presentation.scenes.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

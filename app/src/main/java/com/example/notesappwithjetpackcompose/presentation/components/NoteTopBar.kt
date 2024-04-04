@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.presentation.ui.components
+package com.example.notesappwithjetpackcompose.presentation.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border

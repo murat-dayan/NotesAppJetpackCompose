@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.presentation.ui.components
+package com.example.notesappwithjetpackcompose.presentation.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi

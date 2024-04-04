@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.presentation.ui.screens
+package com.example.notesappwithjetpackcompose.presentation.scenes.add_note
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -18,27 +18,21 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import com.example.notesappwithjetpackcompose.R
-import com.example.notesappwithjetpackcompose.presentation.ui.components.NoteTopBar
+import com.example.notesappwithjetpackcompose.presentation.components.NoteTopBar
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_tertiaryContainer
-import com.example.notesappwithjetpackcompose.presentation.viewmodel.NoteAddPageViewModel
-import dagger.hilt.android.ViewModelLifecycle
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 

@@ -2,9 +2,10 @@ package com.example.notesappwithjetpackcompose.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.notesappwithjetpackcompose.repo.NotesDaoRepository
+import com.example.notesappwithjetpackcompose.data.locale.repository.RepositoryImpl
 import com.example.notesappwithjetpackcompose.data.locale.services.NotesDao
 import com.example.notesappwithjetpackcompose.data.locale.services.RmDatabase
+import com.example.notesappwithjetpackcompose.domain.repository.NInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,8 +37,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNotesDaoRepository(notesDao: NotesDao): NotesDaoRepository {
-        return NotesDaoRepository(notesDao)
+    fun providesNInterface(notesDao: NotesDao): NInterface {
+        return RepositoryImpl(notesDao)
     }
 
 

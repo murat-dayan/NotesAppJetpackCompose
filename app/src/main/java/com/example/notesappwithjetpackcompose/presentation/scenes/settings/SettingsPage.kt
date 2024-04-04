@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.presentation.ui.screens
+package com.example.notesappwithjetpackcompose.presentation.scenes.settings
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.notesappwithjetpackcompose.R
-import com.example.notesappwithjetpackcompose.presentation.ui.components.NoteTopBar
+import com.example.notesappwithjetpackcompose.presentation.components.NoteTopBar
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.NotesAppWithJetpackComposeTheme
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_tertiaryContainer
 

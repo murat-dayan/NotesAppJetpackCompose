@@ -15,9 +15,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.notesappwithjetpackcompose.presentation.ui.screens.MainPage
-import com.example.notesappwithjetpackcompose.presentation.ui.screens.NoteAddPage
-import com.example.notesappwithjetpackcompose.presentation.ui.screens.SettingsPage
+import com.example.notesappwithjetpackcompose.presentation.navigation.Navigation
+import com.example.notesappwithjetpackcompose.presentation.scenes.main.MainPage
+import com.example.notesappwithjetpackcompose.presentation.scenes.add_note.NoteAddPage
+import com.example.notesappwithjetpackcompose.presentation.scenes.settings.SettingsPage
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.NotesAppWithJetpackComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,38 +34,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHosting()
+                    Navigation()
                 }
             }
         }
     }
 }
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun NavHosting(){
-    val navCont = rememberNavController()
 
-    NavHost(
-        navController = navCont,
-        startDestination = "main_page"){
-
-        composable("main_page"){
-            MainPage(navController = navCont)
-        }
-        composable("note_add_page/{noteId}",
-            arguments = listOf(
-                navArgument("noteId"){type= NavType.IntType}
-            )
-        ){
-            val noteId= it.arguments?.getInt("noteId")!!
-            NoteAddPage(navController = navCont, noteId)
-        }
-        composable("settings_page"){
-            SettingsPage(navCont)
-        }
-
-    }
-}
 
 
 
