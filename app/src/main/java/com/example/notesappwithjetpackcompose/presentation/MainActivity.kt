@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose
+package com.example.notesappwithjetpackcompose.presentation
 
 import android.os.Build
 import android.os.Bundle
@@ -15,10 +15,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.notesappwithjetpackcompose.ui.screens.MainPage
-import com.example.notesappwithjetpackcompose.ui.screens.NoteAddPage
-import com.example.notesappwithjetpackcompose.ui.screens.SettingsPage
-import com.example.notesappwithjetpackcompose.ui.theme.NotesAppWithJetpackComposeTheme
+import com.example.notesappwithjetpackcompose.presentation.ui.screens.MainPage
+import com.example.notesappwithjetpackcompose.presentation.ui.screens.NoteAddPage
+import com.example.notesappwithjetpackcompose.presentation.ui.screens.SettingsPage
+import com.example.notesappwithjetpackcompose.presentation.ui.theme.NotesAppWithJetpackComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

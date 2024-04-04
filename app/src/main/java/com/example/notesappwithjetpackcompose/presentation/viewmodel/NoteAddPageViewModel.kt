@@ -1,12 +1,10 @@
-package com.example.notesappwithjetpackcompose.viewmodel
+package com.example.notesappwithjetpackcompose.presentation.viewmodel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notesappwithjetpackcompose.entity.Note
+import com.example.notesappwithjetpackcompose.domain.model.Note
 import com.example.notesappwithjetpackcompose.repo.NotesDaoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

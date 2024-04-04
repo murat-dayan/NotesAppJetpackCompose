@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.ui.components
+package com.example.notesappwithjetpackcompose.presentation.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
@@ -37,8 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.notesappwithjetpackcompose.R
-import com.example.notesappwithjetpackcompose.ui.theme.NotesAppWithJetpackComposeTheme
-import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_primary
+import com.example.notesappwithjetpackcompose.presentation.ui.theme.NotesAppWithJetpackComposeTheme
+import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

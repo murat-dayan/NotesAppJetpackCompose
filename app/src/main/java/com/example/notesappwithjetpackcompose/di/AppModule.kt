@@ -3,8 +3,8 @@ package com.example.notesappwithjetpackcompose.di
 import android.content.Context
 import androidx.room.Room
 import com.example.notesappwithjetpackcompose.repo.NotesDaoRepository
-import com.example.notesappwithjetpackcompose.room.NotesDao
-import com.example.notesappwithjetpackcompose.room.RmDatabase
+import com.example.notesappwithjetpackcompose.data.locale.services.NotesDao
+import com.example.notesappwithjetpackcompose.data.locale.services.RmDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.ui.components
+package com.example.notesappwithjetpackcompose.presentation.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -6,16 +6,13 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -27,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -36,12 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.notesappwithjetpackcompose.R
-import com.example.notesappwithjetpackcompose.entity.Note
-import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_primary
-import java.text.SimpleDateFormat
+import com.example.notesappwithjetpackcompose.domain.model.Note
+import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_primary
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)

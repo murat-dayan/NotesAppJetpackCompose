@@ -1,8 +1,8 @@
-package com.example.notesappwithjetpackcompose.viewmodel
+package com.example.notesappwithjetpackcompose.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.notesappwithjetpackcompose.entity.Note
+import com.example.notesappwithjetpackcompose.domain.model.Note
 import com.example.notesappwithjetpackcompose.repo.NotesDaoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

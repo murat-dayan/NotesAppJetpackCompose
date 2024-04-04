@@ -1,4 +1,4 @@
-package com.example.notesappwithjetpackcompose.ui.screens
+package com.example.notesappwithjetpackcompose.presentation.ui.screens
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -35,9 +35,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import com.example.notesappwithjetpackcompose.R
-import com.example.notesappwithjetpackcompose.ui.components.NoteTopBar
-import com.example.notesappwithjetpackcompose.ui.theme.md_theme_light_tertiaryContainer
-import com.example.notesappwithjetpackcompose.viewmodel.NoteAddPageViewModel
+import com.example.notesappwithjetpackcompose.presentation.ui.components.NoteTopBar
+import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_tertiaryContainer
+import com.example.notesappwithjetpackcompose.presentation.viewmodel.NoteAddPageViewModel
 import dagger.hilt.android.ViewModelLifecycle
 import kotlinx.coroutines.launch
 import java.time.LocalDate
