@@ -29,9 +29,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,8 +47,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.notesappwithjetpackcompose.R
+import com.example.notesappwithjetpackcompose.core.common.Priority
 import com.example.notesappwithjetpackcompose.domain.model.Note
 import com.example.notesappwithjetpackcompose.presentation.components.NoteTopBar
+import com.example.notesappwithjetpackcompose.presentation.components.TextFieldItem
 import com.example.notesappwithjetpackcompose.presentation.navigation.Screen
 import com.example.notesappwithjetpackcompose.presentation.state.CRUDState
 import com.example.notesappwithjetpackcompose.presentation.ui.theme.md_theme_light_tertiaryContainer
@@ -54,7 +58,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceType")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteAddPage(
@@ -62,8 +66,10 @@ fun NoteAddPage(
     noteId: Int,
     noteAddPageViewModel: NoteAddPageViewModel
 ) {
-    val tfNoteTitle = remember { mutableStateOf("") }
-    val tfNoteDetail = remember { mutableStateOf("") }
+    var tfNoteTitle by remember { mutableStateOf("") }
+    var tfNoteDetail by remember { mutableStateOf("") }
+    var selectedPriority by rememberSaveable { mutableStateOf(Priority.LOW) } // Initial priority
+    var priorityMenuvisible by remember { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -72,15 +78,16 @@ fun NoteAddPage(
     val noteState = noteAddPageViewModel.noteState.collectAsStateWithLifecycle().value
 
     LaunchedEffect(noteId) {
-        if (noteId != -1){
+        if (noteId != -1) {
             noteAddPageViewModel.getNoteById(noteId)
 
         }
     }
 
-    if (noteState.note != null){
-        tfNoteTitle.value = noteState.note.note_title
-        tfNoteDetail.value = noteState.note.note_detail
+    if (noteState.note != null) {
+        tfNoteTitle = noteState.note.note_title
+        tfNoteDetail = noteState.note.note_detail
+        selectedPriority = Priority.valueOf(noteState.note.priority.toString())
     }
 
 
@@ -96,21 +103,21 @@ fun NoteAddPage(
                 actionMainHandler = {},
                 actionSecondHandler = {
                     scope.launch {
-                        if (tfNoteTitle.value.isNotEmpty()) {
+                        if (tfNoteTitle.isNotEmpty()) {
 
                             if (noteId == -1) {
                                 val newNote = Note(
                                     note_id = null,
-                                    tfNoteTitle.value,
-                                    tfNoteDetail.value,
+                                    tfNoteTitle,
+                                    tfNoteDetail,
                                     LocalDate.now().toString()
                                 )
                                 noteAddPageViewModel.addNote(newNote)
                             } else {
                                 val updatedNote = Note(
                                     noteId,
-                                    tfNoteTitle.value,
-                                    tfNoteDetail.value,
+                                    tfNoteTitle,
+                                    tfNoteDetail,
                                     LocalDate.now().toString()
                                 )
                                 noteAddPageViewModel.updateNote(updatedNote)
@@ -125,7 +132,8 @@ fun NoteAddPage(
                 secondActionIcon = null,
                 leftIcon = R.drawable.back_icon,
                 leftActionHandler = {
-                    navController.navigate(Screen.MainScreen.route
+                    navController.navigate(
+                        Screen.MainScreen.route
                     )
                 },
                 menuAvailable = false,
@@ -146,86 +154,78 @@ fun NoteAddPage(
                 horizontalAlignment = Alignment.CenterHorizontally,
 
                 ) {
-                TextField(
-                    value = tfNoteTitle.value,
+                TextFieldItem(
+                    value = tfNoteTitle,
                     onValueChange = {
                         isTitleEmpty.value = false
                         if (it.length <= 15) {
-                            tfNoteTitle.value = it
+                            tfNoteTitle = it
                         }
                     },
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.noteTitle),
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    singleLine = true,
-                    maxLines = 1,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 20.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White,
+                    labelId = R.string.noteTitle,
+                    maxlines = 1,
+                )
+                TextFieldItem(
+                    value = tfNoteDetail,
+                    onValueChange = { tfNoteDetail = it },
+                    labelId = R.string.noteDetail,
+                    maxlines = 1,
+                )
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextFieldItem(
+                        value = selectedPriority.toString(),
+                        onValueChange = {
+                            val newText = selectedPriority.toString()
+                        },
+                        labelId = R.string.note_priority,
+                        maxlines = 1,
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                priorityMenuvisible = true
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowDown,
+                                    contentDescription = null,
+                                    tint = Color.White
+                                )
+                            }
+                        },
+                        enabled = false
+                    )
+                    DropdownMenu(
+                        expanded = priorityMenuvisible,
+                        onDismissRequest = { priorityMenuvisible = false }) {
 
-                        ),
-                    isError = isTitleEmpty.value
-                )
-                TextField(
-                    value = tfNoteDetail.value,
-                    onValueChange = { tfNoteDetail.value = it },
-                    label = { Text(text = stringResource(id = R.string.noteDetail)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                )
+                        DropdownMenuItem(
+                            text = { Text(text = Priority.LOW.toString()) },
+                            onClick = {
+                                selectedPriority = Priority.LOW
+                                priorityMenuvisible = false
+                            })
+                        DropdownMenuItem(
+                            text = { Text(text = Priority.MEDIUM.toString()) },
+                            onClick = {
+                                selectedPriority = Priority.MEDIUM
+                                println(selectedPriority.toString())
+                                priorityMenuvisible = false
+                            })
+                        DropdownMenuItem(
+                            text = { Text(text = Priority.HIGH.toString()) },
+                            onClick = {
+                                selectedPriority = Priority.HIGH
+                                priorityMenuvisible = false
+                            })
+
+                    }
+                }
+
 
             }
         }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyTextFieldMenu(){
-
-    var isMenuVisible by remember {
-        mutableStateOf(true)
-    }
-
-    var text by remember {
-        mutableStateOf("")
-    }
-
-    Column(
-        modifier = Modifier.size(300.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        TextField(
-            value = text ,
-            onValueChange = {text = it},
-            trailingIcon = {
-                IconButton(onClick = { isMenuVisible =true }) {
-                    Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
-                }
-            }
-        )
-
-    }
-
-
-}
-@Preview(showBackground = true)
-@Composable
-fun MyTextFieldMenuPreview(){
-    MyTextFieldMenu()
-}
 
 

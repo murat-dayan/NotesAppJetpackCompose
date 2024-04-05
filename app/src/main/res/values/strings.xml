@@ -10,4 +10,5 @@
     <string name="settingsLabel">Settings</string>
     <string name="yes">Yes</string>
     <string name="soon">Soon</string>
+    <string name="note_priority">Priority</string>
 </resources>

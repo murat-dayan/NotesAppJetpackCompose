@@ -10,4 +10,5 @@
     <string name="settingsLabel">Ayarlar</string>
     <string name="yes">Evet</string>
     <string name="soon">Yakında</string>
+    <string name="note_priority">Önem Derecesi</string>
 </resources>
