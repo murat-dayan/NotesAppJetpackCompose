@@ -2,6 +2,7 @@ package com.example.notesappwithjetpackcompose.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.notesappwithjetpackcompose.core.utils.Constants
 import com.example.notesappwithjetpackcompose.data.locale.repository.RepositoryImpl
 import com.example.notesappwithjetpackcompose.data.locale.services.NotesDao
 import com.example.notesappwithjetpackcompose.data.locale.services.RmDatabase
@@ -23,8 +24,8 @@ object AppModule {
         return Room.databaseBuilder(
             context,
             RmDatabase::class.java,
-            "notes.sqlite"
-        ).fallbackToDestructiveMigration().build()
+            Constants.DATABASE_NAME
+        ).build()
 
     }
 

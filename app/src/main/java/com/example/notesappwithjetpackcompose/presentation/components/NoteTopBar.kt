@@ -186,6 +186,7 @@ fun NoteTopBar(
     )
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun NoteTopBarPreview() {
@@ -205,4 +206,4 @@ fun NoteTopBarPreview() {
             menuItemHandler = {}
         )
     }
-}
+}*/
