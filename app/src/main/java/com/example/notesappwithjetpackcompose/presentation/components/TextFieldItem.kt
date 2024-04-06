@@ -22,6 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.notesappwithjetpackcompose.R
@@ -38,11 +40,14 @@ fun TextFieldItem(
     trailingIcon: @Composable (() -> Unit)? = null,
     enabled:Boolean = true
 ){
-    var internalValue by remember { mutableStateOf(value) }
-
+    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
+    val textFieldValue = textFieldValueState.copy(text = value)
     TextField(
-        value =internalValue,
-        onValueChange = onValueChange,
+        value =textFieldValue,
+        onValueChange = {newValue->
+            textFieldValueState = newValue
+            onValueChange(textFieldValueState.text)
+        },
         label = { Text(
             text = stringResource(id = labelId),
             color = Color.White
@@ -51,8 +56,10 @@ fun TextFieldItem(
             .fillMaxWidth()
             .padding(top = 15.dp),
         maxLines = maxlines,
+        textStyle = TextStyle(
+            color = Color.White
+        ),
         colors = TextFieldDefaults.textFieldColors(
-            focusedTextColor = Color.White,
             containerColor = MaterialTheme.colorScheme.tertiary,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
